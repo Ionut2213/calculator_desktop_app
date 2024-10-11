@@ -2,119 +2,95 @@
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout
 
-
-
-
-
 #App settings
 
+class CalcApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        # App Settings
+        self.setWindowTitle("Calculator")
+        self.resize(250, 300)
+
+        # Widgets
+        self.text_box = QLineEdit()
+        self.grid = QGridLayout()
 
 
-app = QApplication([])
-main_window = QWidget()
-main_window.setWindowTitle("Calculator")
-main_window.resize(250, 300)
+        self.buttons = [
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+"
+        
+        ]
+        # Loop for creating buttons
 
-
-
-
-
-# Widgets
-text_box = QLineEdit()
-grid = QGridLayout()
-
-
-buttons = [
-    "7", "8", "9", "/",
-    "4", "5", "6", "*",
-    "1", "2", "3", "-",
-    "0", ".", "=", "+"
-      
-]
-
-
-
-clear = QPushButton("Clear")
-delete = QPushButton("Delete")
-
-
-# Functions
-
-def button_click():
-    button = app.sender()
-    text = button.text()
-
-    if text == '=':
-        symbol = text_box.text()
-        try:
-            res = eval(symbol)
-            text_box.setText(str(res))
-
-        except Exception as e:
-            print("Error:", e)
-
-    elif text == 'Clear':
-        text_box.clear()
-
-    
-
-    elif text == "Delete":
-        current_value = text_box.text()
-        text_box.setText(current_value[:-1])
-
-    else:
-        current_value = text_box.text()
-        text_box.setText(current_value + text)
-
-
-
-
-# Loop for creating buttons
-
-row = 0
-col = 0
-
-
-for text in buttons:
-    button = QPushButton(text)
-    button.clicked.connect(button_click)
-    grid.addWidget(button, row, col)
-    col += 1
-
-    if col > 3:
+        row = 0
         col = 0
-        row += 1
+        for text in self.buttons:
+            button = QPushButton(text)
+            button.clicked.connect(self.button_click)
+            self.grid.addWidget(button, row, col)
+            col += 1
+            if col > 3:
+                col = 0
+                row += 1
+
+        self.clear = QPushButton("Clear")
+        self.delete = QPushButton("Delete")
+
+        #Design
+        master_layout = QVBoxLayout()
+        master_layout.addWidget(self.text_box)
+        master_layout.addLayout(self.grid)
+
+        button_row = QHBoxLayout()
+        button_row.addWidget(self.clear)
+        button_row.addWidget(self.delete)
+
+
+        master_layout.addLayout(button_row)
+        self.setLayout(master_layout)
+
+        # Connect the function to the buttons
+
+        self.clear.clicked.connect(self.button_click)
+        self.delete.clicked.connect(self.button_click)
 
 
 
+    # Method
 
+    def button_click(self):
+        button = app.sender()
+        text = button.text()
 
+        if text == '=':
+            symbol = self.text_box.text()
+            try:
+                res = eval(symbol)
+                self.text_box.setText(str(res))
 
-#Design
+            except Exception as e:
+                print("Error:", e)
 
+        elif text == 'Clear':
+            self.text_box.clear()
 
-master_layout = QVBoxLayout()
-master_layout.addWidget(text_box)
-master_layout.addLayout(grid)
+            
 
-button_row = QHBoxLayout()
-button_row.addWidget(clear)
-button_row.addWidget(delete)
+        elif text == "Delete":
+            current_value = self.text_box.text()
+            self.text_box.setText(current_value[:-1])
 
-
-master_layout.addLayout(button_row)
-main_window.setLayout(master_layout)
-
-# Connect the function to the buttons
-
-clear.clicked.connect(button_click)
-delete.clicked.connect(button_click)
-
-
-
+        else:
+            current_value = self.text_box.text()
+            self.text_box.setText(current_value + text)
 
 
 # Run
-
-main_window.show()
-app.exec_()
+if __name__ in "__main__":
+    app = QApplication([])
+    main_window = CalcApp()
+    main_window.show()
+    app.exec_()
